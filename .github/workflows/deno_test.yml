@@ -18,7 +18,7 @@ jobs:
         uses: denoland/setup-deno@v1.0.0
       - name: Run deno test
         run: |
-          deno run test test/*.test.ts
+          deno test test/*.test.ts
       - name: Run deno lint
         run: |
           deno lint
