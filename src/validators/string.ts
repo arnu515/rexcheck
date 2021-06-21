@@ -6,6 +6,11 @@ import type {
 } from "../types.ts";
 import tlds from "../tld.ts";
 
+const typeValidator: validatingFunction = (item: unknown) => {
+  if (typeof item !== "string") return { error: `${item} is not a string` };
+  return {};
+};
+
 export class StringValidator implements Validator<string> {
   validators: validatingFunction<string>[];
   field: string;
@@ -14,7 +19,7 @@ export class StringValidator implements Validator<string> {
   disallowedValues?: string[];
 
   constructor(field: string) {
-    this.validators = [];
+    this.validators = [typeValidator];
     this.field = field;
     this.isRequired = false;
   }
@@ -95,7 +100,7 @@ export class StringValidator implements Validator<string> {
       }
       const urlWithoutScheme = item.replace(
         new RegExp(`^${scheme || "[\\w]+"}:\/\/`, "i"),
-        "",
+        ""
       );
       const urlWithoutPath = urlWithoutScheme.replace(/\/.+$/, "");
       const urlSplit = urlWithoutPath.split("@");
@@ -138,8 +143,7 @@ export class StringValidator implements Validator<string> {
         const mailProvider = item.split("@")[item.split("@").length - 1];
         if (opts?.mailProvider !== mailProvider) {
           return {
-            error: `${item} should be an email address from ${opts
-              ?.mailProvider}`,
+            error: `${item} should be an email address from ${opts?.mailProvider}`,
           };
         }
       }
