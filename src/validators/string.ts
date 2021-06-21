@@ -81,6 +81,15 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  public uuid() {
+    this.pattern(
+      /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/,
+      { ignoreCase: false },
+    );
+
+    return this;
+  }
+
   public url(opts?: StringValidatorURLFunctionOptions) {
     const { basicAuthRequired = false, scheme, verifyTlds = true } = opts ?? {};
 
