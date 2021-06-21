@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deno_test:
+    name: "Test with `deno test`"
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix: 
+        deno_version: ["1.1.1"]
+    
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1.0.0
+        with:
+          deno-version: ${{ matrix.deno_version }}
+      - name: Run deno test
+        run: |
+          deno run test test/*.test.ts
+      - name: Run deno lint
+        run: |
+          deno lint
