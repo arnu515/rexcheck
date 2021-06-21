@@ -7,11 +7,23 @@ const typeValidator = (field: string): validatingFunction => {
   };
 };
 
+/**
+ * Validator for number (int and float) fields.
+ */
 export class NumberValidator implements Validator<number> {
-  field: string;
-  isRequired: boolean;
+  /** The validator functions that're called upon calling the validate() function */
   validators: validatingFunction<number>[];
+
+  /** The name of the field */
+  field: string;
+
+  /** Weather the field is required or not */
+  isRequired: boolean;
+
+  /** A list of the allowed values allowed using the allow() function */
   allowedValues?: number[];
+
+  /** A list of the disallowed values disallowed using the disallow() function */
   disallowedValues?: number[];
 
   constructor(field: string) {
@@ -20,6 +32,7 @@ export class NumberValidator implements Validator<number> {
     this.isRequired = false;
   }
 
+  /** Let `value` be a valid value of the field */
   public allow(...values: number[]) {
     if (!this.allowedValues) this.allowedValues = [];
     this.allowedValues = this.allowedValues.concat(values);
@@ -37,6 +50,7 @@ export class NumberValidator implements Validator<number> {
     return this;
   }
 
+  /** Don't allow `value` to be a valid value of the field */
   public disallow(...values: number[]) {
     if (!this.disallowedValues) this.disallowedValues = [];
     this.disallowedValues = this.disallowedValues.concat(values);
@@ -54,11 +68,13 @@ export class NumberValidator implements Validator<number> {
     return this;
   }
 
+  /** A value must be given for this field */
   public required() {
     this.isRequired = true;
     return this;
   }
 
+  /** The value must be greater than or equal to `length` */
   public min(length: number) {
     this.validators.push((item) => {
       if (item < length) {
@@ -71,6 +87,7 @@ export class NumberValidator implements Validator<number> {
     return this;
   }
 
+  /** The value must be lesser than or equal to `length` */
   public max(length: number) {
     this.validators.push((item) => {
       if (item > length) {
@@ -83,6 +100,7 @@ export class NumberValidator implements Validator<number> {
     return this;
   }
 
+  /** The value must be a non-decimal integer */
   public integer() {
     this.validators.push((item) => {
       if (!Number.isInteger(item)) {
@@ -93,6 +111,7 @@ export class NumberValidator implements Validator<number> {
     return this;
   }
 
+  /** The value must be a negative number */
   public negative() {
     this.validators.push((item) => {
       if (item >= 0) return { error: `"${this.field}" should be negative` };
@@ -100,6 +119,7 @@ export class NumberValidator implements Validator<number> {
     });
   }
 
+  /** The value must be a positive number */
   public positive() {
     this.validators.push((item) => {
       if (item <= 0) return { error: `"${this.field}" should be positive` };
@@ -107,6 +127,11 @@ export class NumberValidator implements Validator<number> {
     });
   }
 
+  /**
+   * Validates `item` against the field
+   * @param item The item to validate
+   * @returns An object with an optional `error` property
+   */
   // deno-lint-ignore no-explicit-any
   validate(item?: any) {
     if (typeof item === "undefined") {
