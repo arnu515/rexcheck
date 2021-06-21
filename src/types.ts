@@ -8,7 +8,7 @@ export interface ValidateReturnType {
 }
 
 export type validatingFunction<T = unknown> = (
-  item: T
+  item: T,
 ) => ValidatingFunctionReturnType;
 
 export interface Validator<T = unknown> {
@@ -30,6 +30,5 @@ export interface StringValidatorURLFunctionOptions {
 }
 
 export interface StringValidatorEmailFunctionOptions {
-  mailProvider?: string | string[];
-  verifyTlds?: boolean;
+  mailProvider?: string | string[]; verifyTlds?: boolean;
 }
