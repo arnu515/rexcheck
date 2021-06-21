@@ -8,7 +8,7 @@ export interface ValidateReturnType {
 }
 
 export type validatingFunction<T = unknown> = (
-  item: T,
+  item: T
 ) => ValidatingFunctionReturnType;
 
 export interface Validator<T = unknown> {
@@ -21,4 +21,10 @@ export interface Validator<T = unknown> {
 
   required: () => unknown;
   validate: (item?: T) => ValidateReturnType;
+}
+
+export interface StringValidatorURLFunctionOptions {
+  scheme?: string;
+  basicAuthRequired?: boolean;
+  verifyTlds?: boolean;
 }
