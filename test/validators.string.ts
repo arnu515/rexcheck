@@ -359,3 +359,21 @@ Deno.test({
     assert(!schema.validate(TEST_VALUE_2).valid);
   },
 });
+
+Deno.test({
+  name: "StringValidator -> check uuid()",
+  fn() {
+    const FIELD_NAME = "test19";
+    const TEST_VALUE = "cf995353-4f52-4233-bbe2-db2971519b5d";
+    const TEST_VALUE_2 = "not-a-uuid";
+    const schema = string(FIELD_NAME);
+
+    schema.uuid();
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
