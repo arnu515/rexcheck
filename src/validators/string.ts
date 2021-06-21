@@ -50,6 +50,19 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  public pattern(regex: RegExp | string, opts: { ignoreCase?: boolean } = {}) {
+    const flags = opts?.ignoreCase ? "i" : "";
+    const re = new RegExp(regex, flags);
+
+    this.validators.push((item) => {
+      if (!re.test(item))
+        return { error: `"${item}" does not satisfy regex "${re}"` };
+      return {};
+    });
+
+    return this;
+  }
+
   public validate(item?: string) {
     if (!item) {
       if (this.isRequired)
