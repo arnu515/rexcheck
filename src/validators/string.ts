@@ -13,11 +13,23 @@ const typeValidator = (field: string): validatingFunction => {
   };
 };
 
+/**
+ * Validator for string fields.
+ */
 export class StringValidator implements Validator<string> {
+  /** The validator functions that're called upon calling the validate() function */
   validators: validatingFunction<string>[];
+
+  /** The name of the field */
   field: string;
+
+  /** Weather the field is required or not */
   isRequired: boolean;
+
+  /** A list of the allowed values allowed using the allow() function */
   allowedValues?: string[];
+
+  /** A list of the disallowed values disallowed using the disallow() function */
   disallowedValues?: string[];
 
   constructor(field: string) {
@@ -26,6 +38,7 @@ export class StringValidator implements Validator<string> {
     this.isRequired = false;
   }
 
+  /** Let `value` be a valid value of the field */
   public allow(...values: string[]) {
     if (!this.allowedValues) this.allowedValues = [];
     this.allowedValues = this.allowedValues.concat(values);
@@ -43,6 +56,7 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  /** Don't allow `value` to be a valid value of the field */
   public disallow(...values: string[]) {
     if (!this.disallowedValues) this.disallowedValues = [];
     this.disallowedValues = this.disallowedValues.concat(values);
@@ -60,11 +74,13 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  /** A value must be given for this field */
   public required() {
     this.isRequired = true;
     return this;
   }
 
+  /** The value must be atleast `length` characters long */
   public min(length: number) {
     this.validators.push((item) => {
       if (item.length < length) {
@@ -77,6 +93,7 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  /** The value must not be more than `length` characters long */
   public max(length: number) {
     this.validators.push((item) => {
       if (item.length > length) {
@@ -89,24 +106,28 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  /** The value must only contain alphabetic characters */
   public alpha() {
     this.pattern(/^[a-z]+$/, { ignoreCase: true });
 
     return this;
   }
 
+  /** The value must only contain numeric characters */
   public numeric() {
     this.pattern(/^\d+$/, { ignoreCase: true });
 
     return this;
   }
 
+  /** The value must only contain alphanumeric characters */
   public alnum() {
     this.pattern(/^[a-z\d]+$/, { ignoreCase: true });
 
     return this;
   }
 
+  /** The value must be a valid uuid */
   public uuid() {
     this.pattern(
       /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/,
@@ -116,6 +137,9 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  /**
+   * The value must be a valid URL
+   */
   public url(opts?: StringValidatorURLFunctionOptions) {
     const { basicAuthRequired = false, scheme, verifyTlds = true } = opts ?? {};
 
@@ -161,6 +185,7 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  /** The value must be a valid email */
   public email(opts?: StringValidatorEmailFunctionOptions) {
     this.validators.push((item) => {
       if (!/[\w\.\_\+]+@[\w\.\_]+\.[\w]+/.test(item)) {
@@ -190,6 +215,9 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  /** The value must match the regular expression `regex`.
+   * Note: All flags are removed. To ignore case, use the `{ignoreCase}` option.
+   */
   public pattern(regex: RegExp | string, opts: { ignoreCase?: boolean } = {}) {
     const flags = opts?.ignoreCase ? "i" : "";
     const re = new RegExp(regex, flags);
@@ -204,6 +232,11 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  /**
+   * Validates `item` against the field
+   * @param item The item to validate
+   * @returns An object with an optional `error` property
+   */
   // deno-lint-ignore no-explicit-any
   public validate(item?: any) {
     if (typeof item === "undefined") {
