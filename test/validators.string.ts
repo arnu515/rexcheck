@@ -277,3 +277,57 @@ Deno.test({
     assert(!schema.validate(TEST_VALUE_2).valid);
   },
 });
+
+Deno.test({
+  name: "StringValidator -> check email()",
+  fn() {
+    const FIELD_NAME = "test16";
+    const TEST_VALUE = "test@example.org";
+    const TEST_VALUE_2 = "https://example.org";
+    const schema = string(FIELD_NAME);
+
+    schema.email();
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check email({mailProvider: string})",
+  fn() {
+    const FIELD_NAME = "test17";
+    const TEST_VALUE = "test@example.org";
+    const TEST_VALUE_2 = "test@test.com";
+    const schema = string(FIELD_NAME);
+
+    schema.email({ mailProvider: "example.org" });
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check email({verifyTlds: boolean})",
+  fn() {
+    const FIELD_NAME = "test18";
+    const TEST_VALUE = "test@example.org";
+    const TEST_VALUE_2 = "test@example.invalidtlds";
+    const schema = string(FIELD_NAME);
+
+    schema.email({ verifyTlds: true });
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
