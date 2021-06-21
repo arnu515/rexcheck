@@ -11,7 +11,8 @@ interface Field {
 export class Schema {
   fields: Field[];
 
-  constructor(...fields: Field[]) {
+  // deno-lint-ignore no-explicit-any
+  constructor(...fields: any[]) {
     this.fields = fields;
   }
 
