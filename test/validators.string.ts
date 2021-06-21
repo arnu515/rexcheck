@@ -5,6 +5,34 @@ import {
 import { string, StringValidator } from "../src/validators/string.ts";
 
 Deno.test({
+  name: "StringValidator -> check for correct type",
+  fn() {
+    const FIELD_NAME = "test";
+    const TEST_VALUE = 1;
+    const TEST_VALUE_2 = false;
+    const TEST_VALUE_3 = null;
+    const TEST_VALUE_4 = undefined;
+    const TEST_VALUE_5 = "str";
+    const schema = string(FIELD_NAME);
+
+    // Should fail
+    assert(!schema.validate(TEST_VALUE).valid);
+    assert(!schema.validate(TEST_VALUE_2).valid);
+    assert(!schema.validate(TEST_VALUE_3).valid);
+
+    // Should pass
+    assert(schema.validate(TEST_VALUE_4).valid);
+
+    schema.required();
+    // Should now fail
+    assert(!schema.validate(TEST_VALUE_4).valid);
+
+    // Should pass
+    assert(schema.validate(TEST_VALUE_5).valid);
+  },
+});
+
+Deno.test({
   name: "StringValidator -> call string() function",
   fn() {
     const FIELD_NAME = "test1";
