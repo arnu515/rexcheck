@@ -28,3 +28,8 @@ export interface StringValidatorURLFunctionOptions {
   basicAuthRequired?: boolean;
   verifyTlds?: boolean;
 }
+
+export interface StringValidatorEmailFunctionOptions {
+  mailProvider?: string | string[];
+  verifyTlds?: boolean;
+}
