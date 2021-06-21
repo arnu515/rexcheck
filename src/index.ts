@@ -1,4 +1,4 @@
-import type { validatingFunction, ValidateReturnType } from "./types.ts";
+import type { ValidateReturnType, validatingFunction } from "./types.ts";
 
 interface Field {
   validate: validatingFunction;
@@ -17,13 +17,15 @@ export class Schema {
 
   validate(payload: Record<string, unknown>): ValidateReturnType {
     for (const field of this.fields) {
-      const p = payload[field.field]
-      if (field.isRequired && !p) return {valid: false, error: `"${field.field}" is a required field`};
+      const p = payload[field.field];
+      if (field.isRequired && !p) {
+        return { valid: false, error: `"${field.field}" is a required field` };
+      }
       if (p) {
-        const {error} = field.validate(p);
-        if (error) return {valid: false, error}
+        const { error } = field.validate(p);
+        if (error) return { valid: false, error };
       }
     }
-    return {valid: true}
+    return { valid: true };
   }
 }

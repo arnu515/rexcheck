@@ -1,4 +1,4 @@
-import type { Validator, validatingFunction } from "../types.ts";
+import type { validatingFunction, Validator } from "../types.ts";
 
 export class StringValidator implements Validator<string> {
   validators: validatingFunction<string>[];
@@ -19,10 +19,11 @@ export class StringValidator implements Validator<string> {
 
     this.validators.push((item) => {
       if (!this.allowedValues) return {};
-      if (!this.allowedValues.includes(item))
+      if (!this.allowedValues.includes(item)) {
         return {
           error: `"${item}" is not allowed to be a value of "${this.field}"`,
         };
+      }
       return {};
     });
 
@@ -35,10 +36,11 @@ export class StringValidator implements Validator<string> {
 
     this.validators.push((item) => {
       if (!this.disallowedValues) return {};
-      if (this.disallowedValues.includes(item))
+      if (this.disallowedValues.includes(item)) {
         return {
           error: `"${item}" is not allowed to be a value of "${this.field}"`,
         };
+      }
       return {};
     });
 
@@ -73,8 +75,9 @@ export class StringValidator implements Validator<string> {
     const re = new RegExp(regex, flags);
 
     this.validators.push((item) => {
-      if (!re.test(item))
+      if (!re.test(item)) {
         return { error: `"${item}" does not satisfy regex "${re}"` };
+      }
       return {};
     });
 
@@ -83,9 +86,9 @@ export class StringValidator implements Validator<string> {
 
   public validate(item?: string) {
     if (!item) {
-      if (this.isRequired)
+      if (this.isRequired) {
         return { valid: false, error: `"${this.field}" is required` };
-      else return { valid: true };
+      } else return { valid: true };
     }
     for (const validator of this.validators) {
       const { error } = validator(item);

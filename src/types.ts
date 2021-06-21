@@ -8,7 +8,7 @@ export interface ValidateReturnType {
 }
 
 export type validatingFunction<T = unknown> = (
-  item: T
+  item: T,
 ) => ValidatingFunctionReturnType;
 
 export interface Validator<T = unknown> {
