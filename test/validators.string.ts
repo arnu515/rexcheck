@@ -98,7 +98,7 @@ Deno.test({
 Deno.test({
   name: "StringValidator -> check pattern(RegExp, {ignoreCase: true})",
   fn() {
-    const FIELD_NAME = "test5";
+    const FIELD_NAME = "test6";
     const REGEXP = /[abc]+/;
     const TEST_VALUE = "ABCCBA";
     const TEST_VALUE_2 = "hello";
@@ -117,7 +117,7 @@ Deno.test({
 Deno.test({
   name: "StringValidator -> check pattern(RegExp, {ignoreCase: false})",
   fn() {
-    const FIELD_NAME = "test5";
+    const FIELD_NAME = "test7";
     const REGEXP = /[abc]+/i; // i provided to check if flag removal works
     const TEST_VALUE = "ABCCBA";
     const TEST_VALUE_2 = "hello";
@@ -136,13 +136,85 @@ Deno.test({
 Deno.test({
   name: "StringValidator -> check pattern(string)",
   fn() {
-    const FIELD_NAME = "test5";
+    const FIELD_NAME = "test8";
     const REGEXP = "[abc]+"; // i provided to check if flag removal works
     const TEST_VALUE = "abccba";
     const TEST_VALUE_2 = "hello";
     const schema = string(FIELD_NAME);
 
     schema.pattern(REGEXP);
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check alpha()",
+  fn() {
+    const FIELD_NAME = "test9";
+    const TEST_VALUE = "abccba";
+    const TEST_VALUE_2 = "a123";
+    const schema = string(FIELD_NAME);
+
+    schema.alpha();
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check numeric()",
+  fn() {
+    const FIELD_NAME = "test10";
+    const TEST_VALUE = "1230391";
+    const TEST_VALUE_2 = "asdas";
+    const schema = string(FIELD_NAME);
+
+    schema.numeric();
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check alpha()",
+  fn() {
+    const FIELD_NAME = "test11";
+    const TEST_VALUE = "abccba";
+    const TEST_VALUE_2 = "a123";
+    const schema = string(FIELD_NAME);
+
+    schema.alpha();
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check alnum()",
+  fn() {
+    const FIELD_NAME = "test12";
+    const TEST_VALUE = "12asd303fe91";
+    const TEST_VALUE_2 = "Hello, world";
+    const schema = string(FIELD_NAME);
+
+    schema.alnum();
 
     // Validation should pass
     assert(schema.validate(TEST_VALUE).valid);
