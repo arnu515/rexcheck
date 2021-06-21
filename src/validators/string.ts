@@ -1,4 +1,9 @@
-import type { validatingFunction, Validator } from "../types.ts";
+import type {
+  validatingFunction,
+  Validator,
+  StringValidatorURLFunctionOptions,
+} from "../types.ts";
+import tlds from "../tld.ts";
 
 export class StringValidator implements Validator<string> {
   validators: validatingFunction<string>[];
@@ -66,6 +71,47 @@ export class StringValidator implements Validator<string> {
 
   public alnum() {
     this.pattern(/^[a-z\d]+$/, { ignoreCase: true });
+
+    return this;
+  }
+
+  public url(opts?: StringValidatorURLFunctionOptions) {
+    const { basicAuthRequired = false, scheme, verifyTlds = true } = opts ?? {};
+
+    this.validators.push((item) => {
+      // check valid url
+      if (!/[\w]+:\/\/[\w]{0,}:{0,}[\w]{0,}@?[\w]+:?[\d]{0,}/.test(item))
+        return { error: `${item} is not a URL` };
+
+      // Check scheme/protocol
+      if (!new RegExp(`^${scheme || "[\\w]+"}:\/\/`, "i").test(item))
+        return {
+          error: scheme
+            ? `"${item}" should start with "${scheme}://"`
+            : `"${item}" should have a valid scheme.`,
+        };
+      const urlWithoutScheme = item.replace(
+        new RegExp(`^${scheme || "[\\w]+"}:\/\/`, "i"),
+        ""
+      );
+      const urlWithoutPath = urlWithoutScheme.replace(/\/.+$/, "");
+      const urlSplit = urlWithoutPath.split("@");
+      if (urlSplit.length < 1) return { error: `${item} is not a valid URL` };
+      if (basicAuthRequired && urlSplit.length !== 2)
+        return { error: `${item} needs an auth string` };
+
+      if (verifyTlds) {
+        const url = urlSplit[urlSplit.length - 1];
+        const [host] = url.split(":");
+        const tld = host.split(".")[host.split(".").length - 1];
+        if (!tlds.includes(tld.toUpperCase()))
+          return {
+            error: `${item} does not have a valid top-level domain name`,
+          };
+      }
+
+      return {};
+    });
 
     return this;
   }
