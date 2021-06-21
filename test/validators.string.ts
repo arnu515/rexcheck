@@ -377,3 +377,39 @@ Deno.test({
     assert(!schema.validate(TEST_VALUE_2).valid);
   },
 });
+
+Deno.test({
+  name: "StringValidator -> check min(number)",
+  fn() {
+    const FIELD_NAME = "test20";
+    const TEST_VALUE = "Hello";
+    const TEST_VALUE_2 = "Hi";
+    const schema = string(FIELD_NAME);
+
+    schema.min(5);
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check max(number)",
+  fn() {
+    const FIELD_NAME = "test21";
+    const TEST_VALUE = "Hello";
+    const TEST_VALUE_2 = "Hello, world";
+    const schema = string(FIELD_NAME);
+
+    schema.max(8);
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
