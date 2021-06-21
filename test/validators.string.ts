@@ -39,7 +39,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "StringValidator -> check allow()",
+  name: "StringValidator -> check allow(string)",
   fn() {
     const FIELD_NAME = "test3";
     const ALLOWED_VALUE = "Hello, world";
@@ -58,7 +58,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "StringValidator -> check disallow()",
+  name: "StringValidator -> check disallow(string)",
   fn() {
     const FIELD_NAME = "test4";
     const DISALLOWED_VALUE = "Hello, world";
@@ -73,5 +73,81 @@ Deno.test({
 
     // Validation should pass
     assert(schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check pattern(RegExp)",
+  fn() {
+    const FIELD_NAME = "test5";
+    const REGEXP = /[abc]+/;
+    const TEST_VALUE = "abccba";
+    const TEST_VALUE_2 = "hello";
+    const schema = string(FIELD_NAME);
+
+    schema.pattern(REGEXP);
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check pattern(RegExp, {ignoreCase: true})",
+  fn() {
+    const FIELD_NAME = "test5";
+    const REGEXP = /[abc]+/;
+    const TEST_VALUE = "ABCCBA";
+    const TEST_VALUE_2 = "hello";
+    const schema = string(FIELD_NAME);
+
+    schema.pattern(REGEXP, { ignoreCase: true });
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check pattern(RegExp, {ignoreCase: false})",
+  fn() {
+    const FIELD_NAME = "test5";
+    const REGEXP = /[abc]+/i; // i provided to check if flag removal works
+    const TEST_VALUE = "ABCCBA";
+    const TEST_VALUE_2 = "hello";
+    const schema = string(FIELD_NAME);
+
+    schema.pattern(REGEXP, { ignoreCase: false });
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check pattern(string)",
+  fn() {
+    const FIELD_NAME = "test5";
+    const REGEXP = "[abc]+"; // i provided to check if flag removal works
+    const TEST_VALUE = "abccba";
+    const TEST_VALUE_2 = "hello";
+    const schema = string(FIELD_NAME);
+
+    schema.pattern(REGEXP);
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
   },
 });
