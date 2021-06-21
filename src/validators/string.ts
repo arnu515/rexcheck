@@ -100,7 +100,7 @@ export class StringValidator implements Validator<string> {
       }
       const urlWithoutScheme = item.replace(
         new RegExp(`^${scheme || "[\\w]+"}:\/\/`, "i"),
-        ""
+        "",
       );
       const urlWithoutPath = urlWithoutScheme.replace(/\/.+$/, "");
       const urlSplit = urlWithoutPath.split("@");
@@ -143,7 +143,8 @@ export class StringValidator implements Validator<string> {
         const mailProvider = item.split("@")[item.split("@").length - 1];
         if (opts?.mailProvider !== mailProvider) {
           return {
-            error: `${item} should be an email address from ${opts?.mailProvider}`,
+            error: `${item} should be an email address from ${opts
+              ?.mailProvider}`,
           };
         }
       }
