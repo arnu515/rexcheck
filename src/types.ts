@@ -26,12 +26,32 @@ export interface Validator<T = unknown> {
 }
 
 export interface StringValidatorURLFunctionOptions {
+  /**
+   * The schema/protocol that the URL should start with.
+   * Example: `https`
+   */
   scheme?: string;
+
+  /**
+   * Weather an authstring must be present in this url.
+   * If true, this would be a valid url: `http://user:pass@example.com`
+   */
   basicAuthRequired?: boolean;
+
+  /**
+   * Weather to check if the top-level domain (tld) is a valid domain name
+   */
   verifyTlds?: boolean;
 }
 
 export interface StringValidatorEmailFunctionOptions {
+  /**
+   * The mail provider, including domain, of the email
+   */
   mailProvider?: string | string[];
+
+  /**
+   * Weather to check if the top-level domain (tld) is a valid domain name
+   */
   verifyTlds?: boolean;
 }
