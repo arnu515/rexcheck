@@ -50,6 +50,24 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  public alpha() {
+    this.pattern(/^[a-z]+$/, { ignoreCase: true });
+
+    return this;
+  }
+
+  public numeric() {
+    this.pattern(/^\d+$/, { ignoreCase: true });
+
+    return this;
+  }
+
+  public alnum() {
+    this.pattern(/^[a-z\d]+$/, { ignoreCase: true });
+
+    return this;
+  }
+
   public pattern(regex: RegExp | string, opts: { ignoreCase?: boolean } = {}) {
     const flags = opts?.ignoreCase ? "i" : "";
     const re = new RegExp(regex, flags);
