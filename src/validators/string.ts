@@ -110,7 +110,7 @@ export class StringValidator implements Validator<string> {
   public uuid() {
     this.pattern(
       /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/,
-      { ignoreCase: false }
+      { ignoreCase: false },
     );
 
     return this;
@@ -135,7 +135,7 @@ export class StringValidator implements Validator<string> {
       }
       const urlWithoutScheme = item.replace(
         new RegExp(`^${scheme || "[\\w]+"}:\/\/`, "i"),
-        ""
+        "",
       );
       const urlWithoutPath = urlWithoutScheme.replace(/\/.+$/, "");
       const urlSplit = urlWithoutPath.split("@");
@@ -178,7 +178,8 @@ export class StringValidator implements Validator<string> {
         const mailProvider = item.split("@")[item.split("@").length - 1];
         if (opts?.mailProvider !== mailProvider) {
           return {
-            error: `${this.field} should be an email address from ${opts?.mailProvider}`,
+            error: `${this.field} should be an email address from ${opts
+              ?.mailProvider}`,
           };
         }
       }
