@@ -63,6 +63,30 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
+  public min(length: number) {
+    this.validators.push((item) => {
+      if (item.length < length) {
+        return {
+          error: `"${this.field}" should be atleast ${length} characters long`,
+        };
+      }
+      return {};
+    });
+    return this;
+  }
+
+  public max(length: number) {
+    this.validators.push((item) => {
+      if (item.length > length) {
+        return {
+          error: `"${this.field}" should not be more ${length} characters long`,
+        };
+      }
+      return {};
+    });
+    return this;
+  }
+
   public alpha() {
     this.pattern(/^[a-z]+$/, { ignoreCase: true });
 
