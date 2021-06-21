@@ -223,3 +223,57 @@ Deno.test({
     assert(!schema.validate(TEST_VALUE_2).valid);
   },
 });
+
+Deno.test({
+  name: "StringValidator -> check url()",
+  fn() {
+    const FIELD_NAME = "test13";
+    const TEST_VALUE = "https://example.org";
+    const TEST_VALUE_2 = "urlwithoutscheme.com";
+    const schema = string(FIELD_NAME);
+
+    schema.url();
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check url({basicAuthRequired: true})",
+  fn() {
+    const FIELD_NAME = "test14";
+    const TEST_VALUE = "https://test:user@hello.com";
+    const TEST_VALUE_2 = "https://example.org";
+    const schema = string(FIELD_NAME);
+
+    schema.url({ basicAuthRequired: true });
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
+
+Deno.test({
+  name: "StringValidator -> check url({scheme: string})",
+  fn() {
+    const FIELD_NAME = "test15";
+    const TEST_VALUE = "postgres://server.com";
+    const TEST_VALUE_2 = "https://example.org";
+    const schema = string(FIELD_NAME);
+
+    schema.url({ scheme: "postgres" });
+
+    // Validation should pass
+    assert(schema.validate(TEST_VALUE).valid);
+
+    // Validation should fail
+    assert(!schema.validate(TEST_VALUE_2).valid);
+  },
+});
