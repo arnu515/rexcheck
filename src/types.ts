@@ -15,6 +15,8 @@ export interface Validator<T = unknown> {
   validators: validatingFunction<T>[];
   field: string;
   isRequired: boolean;
+  allowedValues?: T[];
+  disallowedValues?: T[];
 
   allow: (...values: T[]) => unknown;
   disallow: (...values: T[]) => unknown;
