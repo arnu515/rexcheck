@@ -30,5 +30,6 @@ export interface StringValidatorURLFunctionOptions {
 }
 
 export interface StringValidatorEmailFunctionOptions {
-  mailProvider?: string | string[]; verifyTlds?: boolean;
+  mailProvider?: string | string[];
+  verifyTlds?: boolean;
 }
