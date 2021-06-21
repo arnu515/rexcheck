@@ -6,9 +6,11 @@ import type {
 } from "../types.ts";
 import tlds from "../tld.ts";
 
-const typeValidator: validatingFunction = (item: unknown) => {
-  if (typeof item !== "string") return { error: `${item} is not a string` };
-  return {};
+const typeValidator = (field: string): validatingFunction => {
+  return (item) => {
+    if (typeof item !== "string") return { error: `${field} is not a string` };
+    return {};
+  };
 };
 
 export class StringValidator implements Validator<string> {
@@ -19,8 +21,8 @@ export class StringValidator implements Validator<string> {
   disallowedValues?: string[];
 
   constructor(field: string) {
-    this.validators = [typeValidator];
     this.field = field;
+    this.validators = [typeValidator(this.field)];
     this.isRequired = false;
   }
 
@@ -108,7 +110,7 @@ export class StringValidator implements Validator<string> {
   public uuid() {
     this.pattern(
       /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/,
-      { ignoreCase: false },
+      { ignoreCase: false }
     );
 
     return this;
@@ -120,26 +122,26 @@ export class StringValidator implements Validator<string> {
     this.validators.push((item) => {
       // check valid url
       if (!/[\w]+:\/\/[\w]{0,}:{0,}[\w]{0,}@?[\w]+:?[\d]{0,}/.test(item)) {
-        return { error: `${item} is not a URL` };
+        return { error: `${this.field} is not a URL` };
       }
 
       // Check scheme/protocol
       if (!new RegExp(`^${scheme || "[\\w]+"}:\/\/`, "i").test(item)) {
         return {
           error: scheme
-            ? `"${item}" should start with "${scheme}://"`
-            : `"${item}" should have a valid scheme.`,
+            ? `"${this.field}" should start with "${scheme}://"`
+            : `"${this.field}" should have a valid scheme.`,
         };
       }
       const urlWithoutScheme = item.replace(
         new RegExp(`^${scheme || "[\\w]+"}:\/\/`, "i"),
-        "",
+        ""
       );
       const urlWithoutPath = urlWithoutScheme.replace(/\/.+$/, "");
       const urlSplit = urlWithoutPath.split("@");
       if (urlSplit.length < 1) return { error: `${item} is not a valid URL` };
       if (basicAuthRequired && urlSplit.length !== 2) {
-        return { error: `${item} needs an auth string` };
+        return { error: `${this.field} needs an auth string` };
       }
 
       if (verifyTlds) {
@@ -148,7 +150,7 @@ export class StringValidator implements Validator<string> {
         const tld = host.split(".")[host.split(".").length - 1];
         if (!tlds.includes(tld.toUpperCase())) {
           return {
-            error: `${item} does not have a valid top-level domain name`,
+            error: `${this.field} does not have a valid top-level domain name`,
           };
         }
       }
@@ -162,13 +164,13 @@ export class StringValidator implements Validator<string> {
   public email(opts?: StringValidatorEmailFunctionOptions) {
     this.validators.push((item) => {
       if (!/[\w\.\_\+]+@[\w\.\_]+\.[\w]+/.test(item)) {
-        return { error: `"${item}" is not an email` };
+        return { error: `"${this.field}" is not an email` };
       }
       if (opts?.verifyTlds) {
         const tld = item.split(".")[item.split(".").length - 1];
         if (!tlds.includes(tld.toUpperCase())) {
           return {
-            error: `${item} does not have a valid top-level domain name`,
+            error: `${this.field} does not have a valid top-level domain name`,
           };
         }
       }
@@ -176,8 +178,7 @@ export class StringValidator implements Validator<string> {
         const mailProvider = item.split("@")[item.split("@").length - 1];
         if (opts?.mailProvider !== mailProvider) {
           return {
-            error: `${item} should be an email address from ${opts
-              ?.mailProvider}`,
+            error: `${this.field} should be an email address from ${opts?.mailProvider}`,
           };
         }
       }
@@ -194,7 +195,7 @@ export class StringValidator implements Validator<string> {
 
     this.validators.push((item) => {
       if (!re.test(item)) {
-        return { error: `"${item}" does not satisfy regex "${re}"` };
+        return { error: `"${this.field}" does not satisfy regex "${re}"` };
       }
       return {};
     });
