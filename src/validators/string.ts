@@ -169,8 +169,9 @@ export class StringValidator implements Validator<string> {
     return this;
   }
 
-  public validate(item?: string) {
-    if (!item) {
+  // deno-lint-ignore no-explicit-any
+  public validate(item?: any) {
+    if (typeof item === "undefined") {
       if (this.isRequired) {
         return { valid: false, error: `"${this.field}" is required` };
       } else return { valid: true };
